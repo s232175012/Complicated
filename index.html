@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>COMPLICATED — Slonchies</title>
+<link rel="stylesheet" href="style/style.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+</head>
+<body>
+
+<header>
+  <div class="logo">COMPLICATED.</div>
+  <div class="header-right">
+    <button class="admin-pill" onclick="openAdminLogin()">ADMIN</button>
+    <div class="cart-btn" onclick="openCart()">🛒 <span id="cartCount">0</span></div>
+  </div>
+</header>
+
+<section class="hero">
+  <h1>SLONCHIES</h1>
+  <h2>R150 EACH</h2>
+  <p>📍 320 Goven Mbeki Room 102 • NMU Delivery • PAXI outside PE</p>
+</section>
+
+<section class="shop-section">
+  <div class="products" id="products">Loading Please Wait, Danko!</div>
+</section>
+
+<!-- PRODUCT VIEW MODAL -->
+<div id="productModal" class="modal hidden">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal('productModal')">×</span>
+    <img id="mImage" class="m-img">
+    <h3 id="mName"></h3><p id="mPrice" class="price"></p>
+    <p id="mStock" class="stock-info"></p>
+    <label>Color *</label><select id="mColor" onchange="updateStockInModal()"></select>
+    <label>Quantity *</label><input type="number" id="mQty" min="1" value="1">
+    <p id="mQtyError" class="error"></p>
+    <button class="btn" onclick="addToCart()">Add to Cart</button>
+  </div>
+</div>
+
+<!-- CART MODAL -->
+<div id="cartModal" class="modal hidden">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal('cartModal')">×</span>
+    <h3>Your Order</h3>
+    <div id="cartItems"></div><div id="cartTotal" class="total"></div><hr>
+    <form id="orderForm" onsubmit="submitOrder(event)">
+      <label>Full Name *</label><input type="text" id="custName" placeholder="Tiyo Lindokuhle" required>
+      <label>WhatsApp Number *</label><input type="tel" id="custPhone" placeholder="078 283 6043" required>
+      <label>Delivery *</label>
+      <select id="custCampus" required>
+        <option value="">Select...</option>
+        <option>NMU South Campus</option><option>NMU North Campus</option><option>NMU 2nd Ave</option>
+        <option>Pickup - 320 Goven Mbeki Room 102</option><option>Outside PE - PAXI</option>
+      </select>
+      <label>Room / Address</label><input type="text" placeholder="32 Arkhon Street" id="custAddress">
+      <label>Note</label><textarea id="custNote" placeholder="I wanted a red one."></textarea>
+      <button type="submit" class="btn">Place An Order</button>
+    </form>
+  </div>
+</div>
+
+<!-- ADMIN LOGIN MODAL - USERNAME + PASSWORD -->
+<div id="adminLoginModal" class="modal hidden">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal('adminLoginModal')">×</span>
+    <h3>Admin Login</h3>
+    <p class="small">Login to manage stock</p>
+    <label>Username *</label><input type="text" id="adminUser" placeholder="Lindokuhle">
+    <label>Password *</label><input type="password" id="adminPass" placeholder="••••••••">
+    <p id="loginError" class="error"></p>
+    <button class="btn" onclick="doAdminLogin()">Login</button>
+  </div>
+</div>
+
+<!-- ADMIN PANEL MODAL - UPLOAD FROM PHONE -->
+<div id="adminModal" class="modal hidden">
+  <div class="modal-content large">
+    <span class="close" onclick="closeModal('adminModal')">×</span>
+    <h3>ADMIN PANEL <span id="adminWelcome" style="font-size:12px;color:#FF5C93"></span></h3>
+    <div id="adminList"></div>
+    <hr>
+    <h4>Add New Slonchies</h4>
+    <label>Color Name *</label><input id="newColorName" placeholder="e.g. Green">
+    <label>Stock *</label><input id="newColorStock" type="number" placeholder="e.g. 10">
+    <label>Price (R)</label><input id="newColorPrice" type="number" value="150">
+    <label>Upload Pic from Phone *</label>
+    <input type="file" id="newColorFile" accept="image/*">
+    <img id="previewImg" style="width:100%;height:150px;object-fit:cover;border-radius:10px;margin-top:8px;display:none;border:2px solid #111">
+    <p class="small">Pic will be compressed to work on all phones</p>
+    <button class="btn" onclick="addNewProduct()">Upload & Save</button>
+    <button class="btn-outline" onclick="adminLogout()">Logout</button>
+  </div>
+</div>
+
+<footer>
+  <div>COMPLICATED • PE FREE / Outside PE R100 PAXI</div>
+  <div>Built by <b><a href="https://s232175012.github.io/Portfolio">TeoCode</a></b> <img src="images/logo.jpeg"></div>
+</footer>
+
+<script src="js/script.js"></script>
+</body>
+</html>
