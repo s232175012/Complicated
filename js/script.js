@@ -1,171 +1,65 @@
-const WHATSAPP_NUMBER = "27782836043";
-const ADMIN_USERNAME = "ComplicatedS";
-const ADMIN_PASSWORD = "TeoCode#26";
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif}
+body{background:#faf6f1;color:#111;-webkit-tap-highlight-color:transparent}
+header{padding:12px 4%;display:flex;justify-content:space-between;align-items:center;background:#fff7ed;border-bottom:2.5px solid #111;position:sticky;top:0;z-index:20}
+.logo{letter-spacing:2px;font-weight:800;font-size:18px}
+.header-right{display:flex;gap:8px;align-items:center}
+.admin-pill{background:#111;color:#fff;border:none;padding:8px 14px;border-radius:20px;font-weight:800;font-size:12px}
+.cart-btn{border:2.5px solid #111;padding:6px 12px;border-radius:20px;font-weight:800;background:#FFD93D}
+.hero{text-align:center;padding:20px 4% 8px}
+.hero h1{font-size:28px;font-weight:800;line-height:1}
+.hero h2{font-size:22px;font-weight:800;color:#FF5C93}
+.hero p{font-size:13px;margin-top:8px;color:#444}
+.shop-section{padding:12px 4% 30px}
+.products{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;max-width:1000px;margin:0 auto}
+@media(min-width:700px){.products{grid-template-columns:repeat(3,1fr);gap:16px}}
+.card{background:#fff;border:2.5px solid #111;border-radius:14px;overflow:hidden;box-shadow:4px 4px 0 #111;padding-bottom:10px;text-align:center;position:relative}
+.card img{width:100%;height:160px;object-fit:cover;background:#eee}
+@media(min-width:700px){.card img{height:240px}}
+.card h4{margin:8px 0 2px;font-size:14px}
+.stock{font-size:10px;padding:3px 7px;border-radius:12px;display:inline-block;margin:4px 0;font-weight:700;border:1px solid #111}
+.in{background:#d1ffcf}.low{background:#fff2c9}.out{background:#ffdede}
+.btn{width:100%;padding:12px;background:#111;color:#fff;border:none;border-radius:10px;margin-top:10px;font-weight:800;font-size:14px}
+.btn-outline{width:100%;padding:10px;background:#fff;color:#111;border:2.5px solid #111;border-radius:10px;margin-top:8px;font-weight:800}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.7);display:flex;justify-content:center;align-items:flex-end;z-index:50}
+@media(min-width:600px){.modal{align-items:center}}
+.hidden{display:none!important}
+.modal-content{background:#fff;width:100%;max-width:440px;border-radius:20px 20px 0 0;padding:18px;max-height:92vh;overflow:auto;border:2.5px solid #111;box-shadow:8px 8px 0 #111;position:relative}
+@media(min-width:600px){.modal-content{border-radius:16px}}
+.modal-content.large{max-width:500px}
+.close{position:absolute;top:10px;right:14px;font-size:22px;font-weight:800;cursor:pointer;background:#111;color:#fff;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;z-index:10}
+.price{font-weight:800}
+label{font-size:11px;font-weight:800;margin-top:10px;display:block;text-transform:uppercase}
+input,select,textarea{width:100%;padding:11px;border:2.5px solid #111;border-radius:10px;margin-top:4px;font-size:14px}
+input[type=file]{padding:8px;background:#fff7ed}
+textarea{height:60px}
+.error{color:red;font-size:12px;margin-top:4px}
+.total{font-weight:800;margin:10px 0}
+.cart-item{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #eee;font-size:13px}
+footer{display:flex;justify-content:space-between;padding:14px 4%;background:#111;color:#e8d5b7;font-size:11px}
+footer img{height:16px;background:#fff;padding:2px;vertical-align:middle}
+.small{font-size:11px;color:#666;margin:4px 0}
+input[type=file]{padding:8px;background:#fff7ed;border:2.5px dashed #111;cursor:pointer}
+.admin-pill:active{transform:scale(.95)}
+.btn:active{transform:scale(.97)}
+input,select,textarea{font-size:16px!important}
+@media(min-width:700px){input,select,textarea{font-size:14px!important}}
 
-const firebaseConfig = {
-  apiKey: "AIzaSyClJ0ov7uK_DUvz2iiOwZk4t4uLf58wfg8",
-  authDomain: "complicated-41f0a.firebaseapp.com",
-  projectId: "complicated-41f0a",
-  storageBucket: "complicated-41f0a.firebasestorage.app",
-  messagingSenderId: "708397354616",
-  appId: "1:708397354616:web:8187acce98d9cea4d0678d"
-};
+/* WELCOME CARD */
+.welcome-card{background:#fff7ed;text-align:center;border:3px solid #111}
+.welcome-card h1{font-size:22px;font-weight:800}
+.welcome-text{margin:10px 0;font-size:14px;line-height:1.4}
+.welcome-badge{display:inline-block;background:#FFD93D;border:2px solid #111;padding:6px 12px;border-radius:20px;font-weight:800;font-size:12px;margin:8px 0}
 
-let useCloud = true;
-let db = null;
-firebase.initializeApp(firebaseConfig);
-db = firebase.firestore();
-
-let productsData = [
-  {id:1,name:"Slonchies",color:"Black",stock:5,price:150,image:"https://via.placeholder.com/400/000000/FFFFFF?text=Black"},
-  {id:2,name:"Slonchies",color:"Blue",stock:3,price:150,image:"https://via.placeholder.com/400/0000FF/FFFFFF?text=Blue"},
-  {id:3,name:"Slonchies",color:"Beige",stock:2,price:150,image:"https://via.placeholder.com/400/F5F5DC/000000?text=Beige"},
-];
-let cart = [];
-let isAdminLogged = false;
-let pendingImageBase64 = null;
-
-db.collection("products").onSnapshot(snap=>{
-  if(snap.empty){
-    productsData.forEach(p=>db.collection("products").doc(String(p.id)).set(p));
-  } else {
-    productsData=snap.docs.map(d=>d.data()).sort((a,b)=>a.id-b.id);
-    render();
-    if(isAdminLogged) refreshAdminList();
-  }
-});
-
-document.addEventListener('DOMContentLoaded',()=>{
-  const fileInput=document.getElementById('newColorFile');
-  if(fileInput){
-    fileInput.addEventListener('change',e=>{
-      const file=e.target.files[0]; if(!file) return;
-      const reader=new FileReader();
-      reader.onload=ev=>{
-        const img=new Image();
-        img.onload=()=>{
-          const canvas=document.createElement('canvas');
-          const maxW=700; let w=img.width, h=img.height;
-          if(w>maxW){h=h*(maxW/w); w=maxW;}
-          canvas.width=w; canvas.height=h;
-          canvas.getContext('2d').drawImage(img,0,0,w,h);
-          pendingImageBase64=canvas.toDataURL('image/jpeg',0.65);
-          const prev=document.getElementById('previewImg');
-          prev.src=pendingImageBase64; prev.style.display='block';
-        }; img.src=ev.target.result;
-      }; reader.readAsDataURL(file);
-    });
-  }
-});
-
-function render(){
-  const c=document.getElementById('products');
-  if(!c) return;
-  c.innerHTML="";
-  productsData.forEach(p=>{
-    const cls=p.stock==0?'out':p.stock<=2?'low':'in';
-    const txt=p.stock>0?`${p.stock} left`:'Out of stock';
-    c.innerHTML+=`<div class="card"><img src="${p.image}"><h4>${p.color}</h4><div>R${p.price}</div><span class="stock ${cls}">${txt}</span><br><button class="btn" ${p.stock==0?'disabled':''} onclick="openProduct(${p.id})">${p.stock==0?'Out':'Order'}</button></div>`;
-  });
-  document.getElementById('cartCount').innerText=cart.reduce((s,i)=>s+i.qty,0);
-}
-function openProduct(id){
-  const p=productsData.find(x=>x.id==id);
-  document.getElementById('mImage').src=p.image;
-  document.getElementById('mName').innerText=p.name+" - "+p.color;
-  document.getElementById('mPrice').innerText="R"+p.price;
-  const sel=document.getElementById('mColor'); sel.innerHTML="";
-  productsData.forEach(prod=>{sel.innerHTML+=`<option value="${prod.id}" ${prod.stock==0?'disabled':''}>${prod.color} - ${prod.stock} left</option>`});
-  sel.value=id; updateStockInModal();
-  document.getElementById('productModal').classList.remove('hidden');
-}
-function updateStockInModal(){
-  const prod=productsData.find(p=>p.id==parseInt(document.getElementById('mColor').value));
-  if(!prod) return;
-  document.getElementById('mStock').innerText=prod.color+": "+prod.stock+" left";
-  document.getElementById('mQty').max=prod.stock;
-}
-function addToCart(){
-  const prodId=parseInt(document.getElementById('mColor').value);
-  const qty=parseInt(document.getElementById('mQty').value);
-  const prod=productsData.find(p=>p.id==prodId);
-  if(qty>prod.stock){document.getElementById('mQtyError').innerText="Only "+prod.stock+" left!";return;}
-  const ex=cart.find(c=>c.id==prodId);
-  if(ex) ex.qty+=qty; else cart.push({id:prodId,color:prod.color,name:prod.name,price:prod.price,qty});
-  closeModal('productModal'); render(); openCart();
-}
-function openCart(){
-  if(cart.length==0){alert("Cart empty");return}
-  let html="";let total=0;
-  cart.forEach((c,i)=>{total+=c.price*c.qty; html+=`<div class="cart-item"><span>${c.color} x${c.qty}</span><span>R${c.price*c.qty} <a href="#" onclick="removeItem(${i});return false" style="color:red">x</a></span></div>`});
-  document.getElementById('cartItems').innerHTML=html;
-  document.getElementById('cartTotal').innerText="Total: R"+total;
-  document.getElementById('cartModal').classList.remove('hidden');
-}
-function removeItem(i){cart.splice(i,1);render();if(cart.length==0)closeModal('cartModal');else openCart();}
-function closeModal(id){document.getElementById(id).classList.add('hidden'); const e=document.getElementById('mQtyError'); if(e) e.innerText="";}
-async function submitOrder(e){
-  e.preventDefault();
-  const name=document.getElementById('custName').value;
-  const phone=document.getElementById('custPhone').value;
-  const campus=document.getElementById('custCampus').value;
-  const addr=document.getElementById('custAddress').value;
-  const note=document.getElementById('custNote').value;
-  let list="";let total=0;
-  for(const c of cart){
-    const p=productsData.find(x=>x.id==c.id);
-    await db.collection("products").doc(String(c.id)).update({stock:p.stock-c.qty});
-    list+=`• ${c.color} x${c.qty} = R${c.price*c.qty}\n`; total+=c.price*c.qty;
-  }
-  const msg=`🔥 COMPLICATED ORDER 🔥\n${list}\nTotal R${total}\nName: ${name}\nPhone: ${phone}\nDelivery: ${campus}\nAddr: ${addr}\nNote: ${note}`;
-  window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`,'_blank');
-  cart=[];render();closeModal('cartModal');e.target.reset();
-}
-function openAdminLogin(){
-  if(isAdminLogged){document.getElementById('adminModal').classList.remove('hidden');return;}
-  document.getElementById('adminLoginModal').classList.remove('hidden');
-}
-function doAdminLogin(){
-  const u=document.getElementById('adminUser').value.trim();
-  const p=document.getElementById('adminPass').value.trim();
-  if(u===ADMIN_USERNAME && p===ADMIN_PASSWORD){
-    isAdminLogged=true; closeModal('adminLoginModal');
-    document.getElementById('adminWelcome').innerText=" — Welcome "+u;
-    openAdminPanel();
-  } else {document.getElementById('loginError').innerText="Wrong username or password!!";}
-}
-function openAdminPanel(){refreshAdminList(); document.getElementById('adminModal').classList.remove('hidden');}
-function refreshAdminList(){
-  const div=document.getElementById('adminList');
-  if(!div) return;
-  div.innerHTML=productsData.map(p=>`
-    <div style="display:flex;gap:8px;align-items:center;border:2px solid #111;padding:8px;border-radius:10px;margin:6px 0">
-      <img src="${p.image}" style="width:40px;height:40px;object-fit:cover;border-radius:6px;border:1.5px solid #111">
-      <div style="flex:1"><b>${p.color}</b><br><small>${p.stock} left - R${p.price}</small></div>
-      <button onclick="updateStock(${p.id},-1)" style="padding:6px 10px;border:2px solid #111;border-radius:8px">-</button>
-      <button onclick="updateStock(${p.id},1)" style="padding:6px 10px;border:2px solid #111;border-radius:8px">+</button>
-      <button onclick="deleteProduct(${p.id})" style="color:red;border:none;background:none">🗑️</button>
-    </div>`).join('');
-}
-async function updateStock(id,d){
-  const p=productsData.find(x=>x.id==id);
-  const newStock=Math.max(0,p.stock+d);
-  await db.collection("products").doc(String(id)).update({stock:newStock});
-}
-async function addNewProduct(){
-  const color=document.getElementById('newColorName').value.trim();
-  const stock=parseInt(document.getElementById('newColorStock').value);
-  const price=parseInt(document.getElementById('newColorPrice').value)||150;
-  if(!color||isNaN(stock)){alert("Fill color and stock");return;}
-  if(!pendingImageBase64){alert("Upload pic from phone first");return;}
-  const id=Date.now();
-  const newProd={id,name:"Slonchies",color,stock,price,image:pendingImageBase64};
-  await db.collection("products").doc(String(id)).set(newProd);
-  document.getElementById('newColorName').value=""; document.getElementById('newColorStock').value=""; document.getElementById('newColorFile').value=""; document.getElementById('previewImg').style.display="none"; pendingImageBase64=null;
-  alert("Saved! All phones see it now 🔥");
-}
-async function deleteProduct(id){
-  if(!confirm("Delete?")) return;
-  await db.collection("products").doc(String(id)).delete();
-}
-function adminLogout(){isAdminLogged=false;closeModal('adminModal');}
+/* GALLERY - CLIENT VIEW */
+.gallery-wrap{position:relative;border:2.5px solid #111;border-radius:14px;overflow:hidden;background:#eee}
+.m-img{width:100%;height:280px;object-fit:cover;display:block;touch-action:pan-y}
+.gallery-arrow{position:absolute;top:50%;transform:translateY(-50%);background:#111;color:#fff;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:none;font-weight:800;cursor:pointer}
+.gallery-arrow.left{left:8px}
+.gallery-arrow.right{right:8px}
+.gallery-dots{display:flex;justify-content:center;gap:6px;margin:10px 0}
+.gallery-dots span{width:7px;height:7px;border-radius:50%;background:#ddd;border:1.5px solid #111}
+.gallery-dots span.active{background:#FF5C93}
+.thumbs{display:flex;gap:6px;margin:8px 0;overflow:auto;padding-bottom:4px}
+.thumbs img{width:54px;height:54px;object-fit:cover;border-radius:10px;border:2px solid #111;cursor:pointer;flex-shrink:0;opacity:0.7}
+.thumbs img.active{border:2.5px solid #FF5C93;opacity:1;transform:scale(1.05)}
+.counter{position:absolute;top:8px;right:8px;background:#111;color:#fff;font-size:11px;font-weight:800;padding:4px 8px;border-radius:12px}
